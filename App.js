@@ -1,74 +1,79 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useReducer } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import ColorsScreen from "./screens/colorsScreen";
 
-export default function App() {
-  const [red, setRed] = useState(0);
-  const [green, setGreen] = useState(0);
-  const [blue, setBlue] = useState(0);
+const reducer = (state, action) => {
 
-  const setColor = (color,change)=>{
-    if(color === 'red'){
-      if(color + change > 255 || red + change < 0){
-        return;
+  switch(action.type) {
+    case 'red':
+      if(state.red + action.payload >255 || state.red + action.payload < 0){
+        return state;
       }
-      else{
-        setRed( red + change)
+      return {
+        ...state,red:state.red + action.payload
       }
-    }
-    if(color === 'green'){
-      if(color + change > 255 || green + change < 0){
-        return;
+    case 'green':
+      if(state.green + action.payload >255 || state.green + action.payload < 0){
+        return state;
       }
-      else{
-        setGreen( green + change)
+      return {
+        ...state,green:state.green + action.payload
       }
-    }if(color === 'blue'){
-      if(color + change > 255 || blue + change < 0){
-        return;
+    case 'blue':
+      if(state.blue + action.payload >255 || state.blue + action.payload < 0){
+        return state;
       }
-      else{
-        setBlue( blue + change)
+      return {
+        ...state,blue:state.blue + action.payload
       }
-    }
-
-
+    default:
+      return state;
+    
   }
+};
+export default function App() {
 
-  return (
-    <View >
+  const [state, dispatch] = useReducer(reducer, { red: 0, green: 0, blue: 0 });
+  const {red,green,blue} = state;
+   return (
+    <View>
       <ColorsScreen
         title="Red"
         onIncrease={() => {
-          setColor('red', 15);
+           dispatch({type:'red', payload:15});
+
         }}
         onDecrease={() => {
-          setColor('red',-1 *  15);
+          dispatch({type:'red', payload:-1 *  15})
         }}
       />
       <ColorsScreen
         title="Green"
         onIncrease={() => {
-          setColor('green' , 15);
+          dispatch({type:'green', payload:15});
+
         }}
         onDecrease={() => {
-          setColor('green' ,-1 * 15);
+          dispatch({type:'green', payload:-1 *  15})
+
         }}
       />
       <ColorsScreen
         title="Blue"
         onIncrease={() => {
-          setColor('blue', 15);
+          dispatch({type:'blue', payload:15});
+
         }}
         onDecrease={() => {
-          setColor('blue' , -1 * 15);
+          dispatch({type:'blue', payload:-1 *  15})
+
         }}
       />
       <View
         style={{
           height: 150,
-          width: 150,
+          alignSelf:'streach',
           backgroundColor: `rgb(${red},${green},${blue})`,
         }}
       ></View>
